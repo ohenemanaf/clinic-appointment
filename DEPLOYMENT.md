@@ -45,22 +45,25 @@ Your Node.js server acts as the bridge between your cloud database and your fron
 ## 3. Hosting the Frontend (React UI)
 Your beautiful React interface needs a blazing fast content delivery network (CDN) to host the static HTML/JS files.
 
-**Recommended Service:** [Vercel](https://vercel.com/)
-- **Why:** Vercel is the creator of Next.js and the absolute best platform for hosting React and Vite applications for free.
+**Recommended Service:** [Netlify](https://www.netlify.com/)
+- **Why:** Netlify provides world-class hosting for modern frontend frameworks like React and Vite, with a very generous free tier.
 
 **Steps:**
 1. **Update API Base URL:** Before deploying, open your code editor and go to `frontend/src/utils/api.js`. You must change the `baseURL` from `http://localhost:5000/api` to the live Render URL you generated in Step 2! (e.g., `https://clinic-api.onrender.com/api`).
 2. Push this change to your GitHub repository.
-3. Go to Vercel.com, create a free account, and click **Add New Project**.
-4. Import your GitHub repository.
-5. Vercel will automatically detect that your project is located in the `frontend` folder and that it uses Vite.
-6. Click **Deploy**.
-7. Within 60 seconds, Vercel will provide you with a live, public, secure `https://` URL for your website!
+3. Go to Netlify.com, create a free account, and click **Add new site > Import an existing project**.
+4. Connect to your GitHub and select your repository.
+5. In the configuration step, make sure to set:
+   - **Base directory:** `frontend`
+   - **Build command:** `npm run build`
+   - **Publish directory:** `frontend/dist`
+6. Click **Deploy Site**.
+7. Within a couple of minutes, Netlify will provide you with a live, public, secure `https://` URL for your website!
 
 ---
 
 ## Final Verification
-1. Visit your Vercel URL.
+1. Visit your Netlify URL.
 2. Register a new student account.
 3. If the registration succeeds, it confirms that your Vercel Frontend is successfully talking to your Render Backend, which is successfully inserting data into your Cloud Database! 
 4. Congratulations on deploying a full-stack system!
