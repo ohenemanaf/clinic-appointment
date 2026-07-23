@@ -15,8 +15,8 @@ exports.createRecord = async (req, res) => {
             
             // 2. Mark appointment as completed
             await connection.query(
-                'UPDATE appointments SET status = "completed" WHERE appointment_id = ?',
-                [appointmentId]
+                'UPDATE appointments SET status = ? WHERE appointment_id = ?',
+                ['completed', appointmentId]
             );
 
             await connection.commit();
