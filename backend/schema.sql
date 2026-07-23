@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS clinic_db;
-USE clinic_db;
+-- Schema deployment script
 
 -- 1. Users Table (Authentication & Core Identity)
 CREATE TABLE IF NOT EXISTS users (
