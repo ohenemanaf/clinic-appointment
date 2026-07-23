@@ -179,8 +179,8 @@ exports.cancelByStaff = async (req, res) => {
         try {
             // 1. Update appointment status
             await connection.query(
-                'UPDATE appointments SET status = "cancelled" WHERE appointment_id = ?',
-                [id]
+                'UPDATE appointments SET status = ? WHERE appointment_id = ?',
+                ['cancelled', id]
             );
 
             // 2. Fetch the student's user_id and staff info to construct the notification
@@ -233,8 +233,8 @@ exports.approveAppointment = async (req, res) => {
         try {
             // 1. Update appointment status to confirmed
             await connection.query(
-                'UPDATE appointments SET status = "confirmed" WHERE appointment_id = ?',
-                [id]
+                'UPDATE appointments SET status = ? WHERE appointment_id = ?',
+                ['confirmed', id]
             );
 
             // 2. Fetch the student's user_id and staff info to construct the notification
