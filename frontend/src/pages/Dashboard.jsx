@@ -1,7 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconCalendarEvent, IconClock, IconUser, IconStethoscope, IconLogout, IconSettings, IconBell } from '@tabler/icons-react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+
+const playNotificationSound = () => {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const audioCtx = new AudioContext();
+        
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+        oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1); // C6
+        
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.5);
+    } catch (err) {
+        console.error("Audio playback failed", err);
+    }
+};
 
 const Dashboard = () => {
     const [slots, setSlots] = useState([]);
@@ -73,6 +100,14 @@ const Dashboard = () => {
             fetchRecords();
             fetchNotifications();
             fetchAppointments();
+            
+            // Poll for real-time updates every 10 seconds
+            const intervalId = setInterval(() => {
+                fetchNotifications();
+                fetchAppointments();
+            }, 10000);
+            
+            return () => clearInterval(intervalId);
         }
     }, [user?.role, user?.userId]);
 
@@ -109,6 +144,15 @@ const Dashboard = () => {
     };
 
     const unreadCount = notifications.filter(n => !n.is_read).length;
+    const prevUnreadRef = useRef(0);
+
+    useEffect(() => {
+        // Play sound if unread count increases, ignoring initial load if it's 0 to prevent noise
+        if (unreadCount > prevUnreadRef.current && prevUnreadRef.current !== 0) {
+            playNotificationSound();
+        }
+        prevUnreadRef.current = unreadCount;
+    }, [unreadCount]);
 
     const handleMarkAsRead = async (id) => {
         try {
@@ -139,7 +183,7 @@ const Dashboard = () => {
                             className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors relative"
                             title="Notifications"
                         >
-                            <IconBell size={20} />
+                            <IconBell size={20} className={unreadCount > 0 ? "bell-ring text-blue-500" : ""} />
                             {unreadCount > 0 && (
                                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
                             )}

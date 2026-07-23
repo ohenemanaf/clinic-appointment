@@ -9,3 +9,18 @@
 body {
   @apply bg-slate-50 text-slate-900;
 }
+
+@keyframes ring {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(15deg); }
+  20% { transform: rotate(-10deg); }
+  30% { transform: rotate(5deg); }
+  40% { transform: rotate(-5deg); }
+  50% { transform: rotate(0); }
+  100% { transform: rotate(0); }
+}
+
+.bell-ring {
+  animation: ring 1.5s ease-in-out infinite;
+  transform-origin: top center;
+}
